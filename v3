@@ -1,0 +1,17 @@
+import socket
+import json
+
+# JSON data to send
+data = {
+    "command": "start",
+    "flowrate": 22.5
+}
+
+# Encode JSON as UTF-8
+json_string = json.dumps(data)
+json_bytes = json_string.encode('utf-8')
+
+# Send over TCP
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.connect(('127.0.0.1', 5052))  # Update port if needed
+    s.sendall(json_bytes)
