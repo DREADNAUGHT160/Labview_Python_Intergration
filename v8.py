@@ -32,7 +32,7 @@ class ValveControlApp:
 
     def connect_to_labview(self):
         try:
-            self.client_socket.connect(('127.0.0.1', 6000))  # Change to LabVIEW IP and port
+            self.client_socket.connect(('172.22.11.2', 5052))  # Updated IP and Port
             self.connected = True
             print("Connected to LabVIEW!")
         except Exception as e:
@@ -98,12 +98,14 @@ class ValveControlApp:
             try:
                 if self.connected:
                     self.send_json_once()
-                time.sleep(0.0005)
+                time.sleep(0.5)  # Adjusted sleep time for background send
             except Exception as e:
                 print("Background send error:", e)
 
     def on_close(self):
         self.running = False
+        if self.sender_thread.is_alive():
+            self.sender_thread.join()  # Ensure that the thread finishes its work
         if self.connected:
             self.client_socket.close()
         self.root.destroy()
